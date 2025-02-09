@@ -1,0 +1,18 @@
+module;
+
+#include <string>
+#include <vector>
+
+export module WorldState:World;
+
+// An element in the state of a world.
+export struct WorldElement
+{
+    std::string DisplayName;
+};
+
+// The entire state of a particular world.
+export struct WorldState
+{
+    std::vector<WorldElement> Elements;
+};

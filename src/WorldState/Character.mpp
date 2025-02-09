@@ -1,0 +1,19 @@
+module;
+
+#include <string>
+#include <vector>
+
+export module WorldState:Character;
+import :World;
+
+// A single attribute of a character.
+export struct CharacterElement
+{
+    std::string DisplayName;
+};
+
+// The current state of a character.
+export struct Character: public WorldElement
+{
+    std::vector<CharacterElement> Elements;
+};
