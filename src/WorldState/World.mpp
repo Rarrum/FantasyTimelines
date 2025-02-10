@@ -15,8 +15,8 @@ export struct WorldElement
     std::string DisplayName;
 };
 
-// The entire state of a particular world.
-export struct WorldState final
+// The entire state of a world at a point in time.
+export struct World final
 {
     std::vector<ClonePtr<WorldElement>> Elements;
 };

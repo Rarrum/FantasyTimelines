@@ -5,14 +5,25 @@ module;
 
 export module WorldState:Character;
 import :World;
+import :Timeline;
 
 // A single attribute of a character.
 export struct CharacterElement final
 {
     std::string DisplayName;
+
+    enum class Type
+    {
+        String,
+        Number,
+        Flag
+    };
+
+    Type DataType;
+    std::string Data;
 };
 
-// The current state of a character.
+// The state of a character at a point in time.
 export struct Character final : public WorldElement
 {
     std::vector<CharacterElement> Elements;
