@@ -3,16 +3,20 @@ module;
 #include <string>
 #include <vector>
 
+import Utilities;
+
 export module WorldState:World;
 
 // An element in the state of a world.
 export struct WorldElement
 {
+    virtual ~WorldElement() = default;
+
     std::string DisplayName;
 };
 
 // The entire state of a particular world.
-export struct WorldState
+export struct WorldState final
 {
-    std::vector<WorldElement> Elements;
+    std::vector<ClonePtr<WorldElement>> Elements;
 };

@@ -3,22 +3,26 @@ module;
 #include <string>
 #include <vector>
 
+import Utilities;
+
 export module WorldState:Timeline;
 
 // Represents a single change to a timeline
 export struct TimelineChange
 {
+    virtual ~TimelineChange() = default;
+
     std::string DisplayName;
 };
 
 // Represents a timeline of changes.
-export struct Timeline
+export struct Timeline final
 {
-    std::vector<TimelineChange> Changes;
+    std::vector<ClonePtr<TimelineChange>> Changes;
 };
 
 // Represents a timeline splitting into parallel dimensions.
-export struct TimelineSplit: TimelineChange
+export struct TimelineSplit final : public TimelineChange
 {
     std::vector<Timeline> Splits;
 };

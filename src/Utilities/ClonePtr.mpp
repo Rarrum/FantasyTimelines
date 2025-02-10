@@ -1,0 +1,200 @@
+module;
+
+#include <concepts>
+#include <utility>
+
+export module Utilities:ClonePtr;
+
+// A smart-pointer class with value assignment and copy semantics for the underlying type.  If ClonePtr is copied, the underlying type is copied.
+// If T is a base class, and a derived class of T is assigned to it, then the derive class will be copied when ClonePtr is copied, even if the base class isn't copyable.
+// ClonePtr will never contain null.  The default ctor default initializes in instance of T.
+export template <typename T>
+class ClonePtr final
+{
+public:
+    // standard ctors/assignment
+    ClonePtr()
+    requires std::default_initializable<T>
+    {
+        copier = &ClonePtr::CopierFunc<T>;
+        ptr = new T;
+    }
+
+    ClonePtr(const ClonePtr<T> &other)
+    {
+        copier = other.copier;
+        ptr = copier(other.ptr);
+    }
+
+    ClonePtr(ClonePtr<T> &&other) noexcept
+    {
+        copier = other.copier;
+        ptr = other.ptr;
+        other.ptr = nullptr;
+    }
+
+    ClonePtr<T>& operator=(const ClonePtr<T> &other)
+    {
+        copier = other.copier;
+        ptr = copier(other.ptr);
+        return *this;
+    }
+
+    ClonePtr<T>& operator=(ClonePtr<T> &&other) noexcept
+    {
+        copier = other.copier;
+        ptr = other.ptr;
+        other.ptr = nullptr;
+        return *this;
+    }
+
+    ~ClonePtr() noexcept
+    {
+        delete ptr;
+        ptr = nullptr;
+    }
+
+    // accept assignments from value types of T
+    template <typename D>
+    ClonePtr(const D &other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = copier(&other);
+    }
+
+    template <typename D>
+    ClonePtr(D &&other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = new D(std::forward<D>(other));
+    }
+
+    template <typename D>
+    ClonePtr<T>& operator=(const D &other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = copier(&other);
+        return *this;
+    }
+
+    template <typename D>
+    ClonePtr<T>& operator=(D &&other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = new D(std::forward<D>(other));
+        return *this;
+    }
+
+    // accept assignments from pointer types of T
+    template <typename D>
+    ClonePtr(const D *other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = copier(other);
+    }
+
+    template <typename D>
+    ClonePtr<T>& operator=(const D *other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = copier(other);
+        return *this;
+    }
+
+    //accept assignments of ClonePtr of a derived type
+    template <typename D>
+    ClonePtr(const ClonePtr<D> &other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = copier(other.ptr);
+    }
+
+    template <typename D>
+    ClonePtr(ClonePtr<D> &&other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = other.ptr;
+        other.ptr = nullptr;
+    }
+
+    template <typename D>
+    ClonePtr<T>& operator=(const ClonePtr<D> &other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = copier(other.ptr);
+        return *this;
+    }
+
+    template <typename D>
+    ClonePtr<T>& operator=(ClonePtr<D> &&other)
+    requires std::derived_from<D, T>
+    {
+        copier = &ClonePtr::CopierFunc<D>;
+        ptr = other.ptr;
+        other.ptr = nullptr;
+        return *this;
+    }
+
+    // pointer conversions
+    operator T*()
+    {
+        return ptr;
+    }
+
+    operator T*() const
+    {
+        return ptr;
+    }
+
+    T& operator *()
+    {
+        return *ptr;
+    }
+
+    const T& operator *() const
+    {
+        return *ptr;
+    }
+
+    T* operator ->()
+    {
+        return ptr;
+    }
+
+    const T* operator ->() const
+    {
+        return ptr;
+    }
+
+    // in-place creation
+    template <typename ...Args>
+    static ClonePtr<T> Make(Args&& ...args)
+    {
+        T *ptr = new T(std::forward<Args>(args)...);
+        return ClonePtr(std::move(*ptr));
+    }
+
+private:
+    T *ptr;
+
+    template <typename U>
+    static T* CopierFunc(const T* src)
+    {
+        return new U(*static_cast<const U*>(src));
+    }
+
+    using CopierType = T* (*)(const T*);
+    CopierType copier;
+
+    template <typename U>
+    friend class ClonePtr;
+};
