@@ -1,17 +1,19 @@
-#pragma once
+module;
 
 #include <functional>
 
 #include <QWidget>
 #include <QtGui/QCloseEvent>
 
-class ChildQWidget: public QWidget
+export module ChildQWidget;
+
+export class ChildQWidget: public QWidget
 {
 public:
-    inline ChildQWidget(std::function<void(ChildQWidget*)> closeCallback): closeCallback(closeCallback) {}
+    ChildQWidget(std::function<void(ChildQWidget*)> closeCallback): closeCallback(closeCallback) {}
 
 protected:
-    inline void closeEvent(QCloseEvent *event) override
+    void closeEvent(QCloseEvent *event) override
     {
         closeCallback(this);
 

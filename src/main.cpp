@@ -4,10 +4,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
-#include "Gui/MainGui.h"
-
-import WorldState;
-import Utilities;
+import MainGui;
 
 int main(int argc, char **argv)
 {
