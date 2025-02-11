@@ -3,8 +3,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-CharacterListGui::CharacterListGui(World view, QWidget *parent)
-    //: QWidget(parent) hrm
+CharacterListGui::CharacterListGui(World view, std::function<void(ChildQWidget*)> closeCallback)
+    : ChildQWidget(closeCallback)
 {
     QVBoxLayout *manualLayout = new QVBoxLayout();
     manualLayout->setAlignment(Qt::AlignTop);
@@ -25,4 +25,7 @@ CharacterListGui::CharacterListGui(World view, QWidget *parent)
     }
 
     setLayout(manualLayout);
+
+    resize(800, 600);
+    show();
 }

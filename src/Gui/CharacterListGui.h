@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 
-#include <QWidget>
+#include "Widgets/ChildQWidget.h"
 
 import WorldState;
 
-class CharacterListGui : public QWidget
+class CharacterListGui : public ChildQWidget
 {
 public:
-    CharacterListGui(World view, QWidget *parent);
+    CharacterListGui(World view, std::function<void(ChildQWidget*)> closeCallback);
 };

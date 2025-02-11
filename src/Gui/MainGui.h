@@ -4,17 +4,23 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <QWidget>
 
 import WorldState;
 
-class WorldGui : public QWidget
+struct MainGuiState;
+
+class MainGui : public QWidget
 {
 public:
-    WorldGui(Universe &universe);
+    MainGui();
+    ~MainGui();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
-    Universe &universe;
-    World currentView;
+    std::unique_ptr<MainGuiState> state;
 };

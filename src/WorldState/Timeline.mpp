@@ -6,23 +6,27 @@ module;
 import Utilities;
 
 export module WorldState:Timeline;
+import :World;
 
 // Represents a single change to a timeline
 export struct TimelineChange
 {
     virtual ~TimelineChange() = default;
+    //virtual void Apply(World &world) = 0;
 
     std::string DisplayName;
 };
 
 // Represents a timeline of changes.
-export struct Timeline final
-{
-    std::vector<ClonePtr<TimelineChange>> Changes;
-};
+export using Timeline = std::vector<ClonePtr<TimelineChange>>;
+export using TimelineIter = Timeline::iterator;
 
 // Represents a timeline splitting into parallel dimensions.
 export struct TimelineSplit final : public TimelineChange
 {
     std::vector<Timeline> Splits;
+    size_t ChosenPathIndex = 0;
+
+    // No-op.  TimelineSplit is special-cased.
+    //void Apply(World &world) override {}
 };
