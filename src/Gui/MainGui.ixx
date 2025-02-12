@@ -3,20 +3,25 @@ module;
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QApplication>
 
 #include <list>
 
 import WorldState;
 import CharacterListGui;
-import ChildQWidget;
+import QTrackedWidget;
 
 export module MainGui;
 
+// The base top-level window for the app.  There will only ever be a single one of these created.
 export class MainGui : public QWidget
 {
 public:
-    MainGui()
+    MainGui(QApplication &app)
+        : app(app)
     {
+        setWindowTitle("Fantasy Timelines - Main Controls");
+
         // Temp for testing
         Character c;
         c.DisplayName = "Rarrum";
@@ -24,6 +29,7 @@ public:
 
         //TODO: default to the final view?
         currentView = initialWorld;
+        QTrackedWidget::ChangeTimelineView(currentView);
 
         QVBoxLayout *manualLayout = new QVBoxLayout();
         manualLayout->setAlignment(Qt::AlignTop);
@@ -36,7 +42,7 @@ public:
         charactersButton->setText("View Characters");
         QObject::connect(charactersButton, &QPushButton::clicked, [&]()
         {
-            allChildWindows.emplace_back(new CharacterListGui(currentView, ChildClosedCallback()));
+            new CharacterListGui();
         });
         manualLayout->addWidget(charactersButton);
 
@@ -48,23 +54,13 @@ public:
 protected:
     void closeEvent(QCloseEvent *event) override
     {
-        for (ChildQWidget *child : allChildWindows)
-            delete child;
-        allChildWindows.clear();
+        app.closeAllWindows();
     }
 
 private:
+    QApplication &app;
+
     World initialWorld;
     Timeline worldTimeline;
     World currentView;
-
-    std::list<ChildQWidget*> allChildWindows;
-
-    std::function<void(ChildQWidget*)> ChildClosedCallback()
-    {
-        return [&](ChildQWidget *child)
-        {
-            allChildWindows.remove(child);
-        };
-    }
 };

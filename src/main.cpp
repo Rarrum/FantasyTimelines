@@ -9,7 +9,7 @@ import MainGui;
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    MainGui mainGui;
+    MainGui mainGui(app);
 
     return app.exec();
 }
