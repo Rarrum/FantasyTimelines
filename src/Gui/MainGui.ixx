@@ -13,7 +13,7 @@ import QTrackedWidget;
 
 export module MainGui;
 
-// The base top-level window for the app.  There will only ever be a single one of these created.
+// The base top-level window for the app.
 export class MainGui : public QWidget
 {
 public:
@@ -25,11 +25,7 @@ public:
         // Temp for testing
         Character c;
         c.DisplayName = "Rarrum";
-        initialWorld.Elements.emplace_back(c);
-
-        //TODO: default to the final view?
-        currentView = initialWorld;
-        QTrackedWidget::ChangeTimelineView(currentView);
+        GlobalWorld.InitialWorld.Elements.emplace_back(c);
 
         QVBoxLayout *manualLayout = new QVBoxLayout();
         manualLayout->setAlignment(Qt::AlignTop);
@@ -59,8 +55,4 @@ protected:
 
 private:
     QApplication &app;
-
-    World initialWorld;
-    Timeline worldTimeline;
-    World currentView;
 };

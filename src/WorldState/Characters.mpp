@@ -1,0 +1,42 @@
+module;
+
+#include <string>
+#include <vector>
+
+export module WorldState:Characters;
+import :World;
+
+// A single attribute of a character.
+export struct CharacterElement final
+{
+    std::string DisplayName;
+
+    enum class Type
+    {
+        String,
+        Number,
+        Flag
+    };
+
+    Type DataType;
+    std::string Data;
+};
+
+// The state of a character at a point in time.
+export struct Character final : public WorldElement
+{
+    std::vector<CharacterElement> Elements;
+};
+
+//TODO: think about how to uniquely identifier a character across different parts of the timeline... for now just using name
+export const Character* FindCharacter(const World &world, const std::string &name)
+{
+    for (auto &e : world.Elements)
+    {
+        const Character *c = dynamic_cast<const Character*>(&*e);
+        if (c && c->DisplayName == name)
+            return c;
+    }
+
+    return nullptr;
+}

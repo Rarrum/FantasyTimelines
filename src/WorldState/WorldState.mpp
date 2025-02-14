@@ -1,0 +1,20 @@
+module;
+
+export module WorldState:WorldState;
+import :World;
+import :Timeline;
+
+// A world and its timeline, and the current view of the world (computed from the initial world and some or all of the timeline).
+export struct WorldState
+{
+    World InitialWorld;
+    Timeline WorldTimeline;
+
+    //TODO: Also an iter for where into the timeline this view is at?
+    const World& CurrentView() const { return InitialWorld; }
+
+    //TODO: caching of World along the timeline maybe, and mechanisms to change CurrentView
+};
+
+// Global world state
+export WorldState GlobalWorld;

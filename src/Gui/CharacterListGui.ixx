@@ -29,9 +29,9 @@ public:
         manualLayout->setAlignment(Qt::AlignTop);
         setLayout(manualLayout);
 
-        for (auto &e : worldView.Elements)
+        for (const auto &e : GlobalWorld.CurrentView().Elements)
         {
-            Character *c = dynamic_cast<Character*>(&*e);
+            const Character *c = dynamic_cast<const Character*>(&*e);
             if (!c)
                 continue;
 

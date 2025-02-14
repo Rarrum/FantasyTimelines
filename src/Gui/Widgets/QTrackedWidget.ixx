@@ -18,10 +18,8 @@ public:
         AllTrackedWidgets.emplace_back(this);
     }
 
-    static void ChangeTimelineView(const World &state) //TODO: iter to timeline too?
+    static void ChangeTimelineView()
     {
-        worldView = state;
-
         for (QTrackedWidget *w : AllTrackedWidgets)
             w->OnChangeTimelineView();
     }
@@ -39,10 +37,6 @@ protected:
     virtual void OnChangeTimelineView()
     {
     }
-
-    static World worldView;
 };
 
-// Really?  Is needing this a compiler bug?
 std::list<QTrackedWidget*> QTrackedWidget::AllTrackedWidgets;
-World QTrackedWidget::worldView;

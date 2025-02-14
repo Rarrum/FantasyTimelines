@@ -30,7 +30,7 @@ public:
         manualLayout->setAlignment(Qt::AlignTop);
         setLayout(manualLayout);
 
-        const Character *c = FindCharacter(worldView, id);
+        const Character *c = FindCharacter(GlobalWorld.CurrentView(), id);
         if (!c)
             return;
 
