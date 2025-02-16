@@ -8,7 +8,6 @@ module;
 #include <QLabel>
 #include <QLineEdit>
 #include <QIntValidator>
-#include <QSpacerItem>
 
 #include <unordered_set>
 #include <string>
@@ -40,8 +39,6 @@ public:
         setWindowTitle("Fantasy Timelines - Character");
         name = characterName;
 
-        tabs = new QTabWidget();
-
         OnChangeTimelineView();
         resize(800, 600);
         show();
@@ -64,160 +61,146 @@ public:
         topLayout->setEnabled(true);
         setWindowTitle(QString::fromStdString("Fantasy Timelines - Character - " + c->Name));
 
-        tabs = new QTabWidget();
+        auto tabs = new QTabWidget();
         topLayout->addWidget(tabs);
 
         // Stats tab
-        tabStats = new QWidget();
+        auto tabStats = new QWidget();
         tabs->addTab(tabStats, "Stats");
 
-        statsMainLayout = new QVBoxLayout();
+        auto statsMainLayout = new QVBoxLayout();
         tabStats->setLayout(statsMainLayout);
 
-        statsTopLayout = new QGridLayout();
+        auto statsTopLayout = new QGridLayout();
         statsMainLayout->addLayout(statsTopLayout);
 
-        AddNumberField(statsTopLayout, "Current HP", 0, 0); //TODO group boxes for health and misc?
-        AddNumberField(statsTopLayout, "Max HP", 0, 2);
-        AddNumberField(statsTopLayout, "Temp HP", 0, 4);
-        AddNumberField(statsTopLayout, "Armor Class", 0, 6);
-        AddNumberField(statsTopLayout, "Speed", 0, 8);
+        auto statsFluidBox = new QGroupBox("Status");
+        statsTopLayout->addWidget(statsFluidBox, 0, 0);
 
-        statsBottomLayout = new QHBoxLayout();
+        auto statsFluidLayout = new QGridLayout();
+        statsFluidBox->setLayout(statsFluidLayout);
+
+        AddNumberField(statsFluidLayout, "Current HP", 0, 0);
+        AddNumberField(statsFluidLayout, "Max HP", 0, 2);
+        AddNumberField(statsFluidLayout, "Temp HP", 0, 4);
+        AddNumberField(statsFluidLayout, "Conditions", 0, 6);
+
+        auto statsMiscBox = new QGroupBox("Misc");
+        statsTopLayout->addWidget(statsMiscBox, 1, 0);
+
+        auto statsMiscLayout = new QGridLayout();
+        statsMiscBox->setLayout(statsMiscLayout);
+
+        AddNumberField(statsMiscLayout, "Armor Class", 0, 0);
+        AddNumberField(statsMiscLayout, "Speed", 0, 2);
+        AddNumberField(statsMiscLayout, "Proficiency Bonus", 0, 4);
+        AddNumberField(statsMiscLayout, "Passive Perception", 0, 6);
+
+        auto statsBottomLayout = new QHBoxLayout();
         statsMainLayout->addLayout(statsBottomLayout);
 
-        primaryStatsBox = new QGroupBox();
-        primaryStatsBox->setTitle("Primary Stats");
+        auto primaryStatsBox = new QGroupBox("Primary Stats");
         statsBottomLayout->addWidget(primaryStatsBox);
 
-        primaryStatsLayout = new QGridLayout();
+        auto primaryStatsLayout = new QGridLayout();
         primaryStatsBox->setLayout(primaryStatsLayout);
 
         for (const std::string &s : DefaultPrimaryStats)
             AddNumberField(primaryStatsLayout, s, primaryStatsLayout->rowCount(), 0);
 
-        primaryStatsLayout->addItem(new QSpacerItem(10, 20), primaryStatsLayout->rowCount(), 0);
-
-        AddNumberField(primaryStatsLayout, "Proficiency Bonus", primaryStatsLayout->rowCount(), 0);
-        AddNumberField(primaryStatsLayout, "Passive Perception", primaryStatsLayout->rowCount(), 0);
-
-        primarySavesBox = new QGroupBox();
-        primarySavesBox->setTitle("Saving Throws");
+        auto primarySavesBox = new QGroupBox("Saving Throws");
         statsBottomLayout->addWidget(primarySavesBox);
 
-        primarySavesLayout = new QGridLayout();
+        auto primarySavesLayout = new QGridLayout();
         primarySavesBox->setLayout(primarySavesLayout);
 
         for (const std::string &s : DefaultPrimaryStats)
             AddNumberField(primarySavesLayout, s, primarySavesLayout->rowCount(), 0);
 
-        skillsBox = new QGroupBox();
-        skillsBox->setTitle("Skills");
+        auto skillsBox = new QGroupBox("Skills");
         statsBottomLayout->addWidget(skillsBox);
 
-        skillsLayout = new QGridLayout();
+        auto skillsLayout = new QGridLayout();
         skillsBox->setLayout(skillsLayout);
 
         AddNumberField(skillsLayout, "Cat Handling", 0, 0);
         AddNumberField(skillsLayout, "TODO all the normal stuff", 1, 0);
 
-        //TODO: where to put proficiencies?
+        // Actions tab
+        auto tabActions = new QWidget();
+        tabs->addTab(tabActions, "Actions");
 
-        // Items tab
-        tabItems = new QWidget();
-        tabs->addTab(tabItems, "Items");
+        auto actionsMainLayout = new QGridLayout();
+        tabActions->setLayout(actionsMainLayout);
 
-        itemsMainLayout = new QGridLayout();
-        tabItems->setLayout(itemsMainLayout);
+        auto actionsActionsBox = new QGroupBox("Actions");
+        actionsMainLayout->addWidget(actionsActionsBox, 0, 0, 2, 1);
 
-        itemsEquippedBox = new QGroupBox();
-        itemsEquippedBox->setTitle("Equipped");
-        itemsMainLayout->addWidget(itemsEquippedBox, 0, 0);
+        auto actionsBonusActionsBox = new QGroupBox("Bonus Actions");
+        actionsMainLayout->addWidget(actionsBonusActionsBox, 0, 1);
 
-        itemsCurrencyBox = new QGroupBox();
-        itemsCurrencyBox->setTitle("Currency");
-        itemsMainLayout->addWidget(itemsCurrencyBox, 1, 0);
-
-        itemsInventoryBox = new QGroupBox();
-        itemsInventoryBox->setTitle("Inventory");
-        itemsMainLayout->addWidget(itemsInventoryBox, 0, 1, 2, 1);
+        auto actionsReactionsBox = new QGroupBox("Reactions");
+        actionsMainLayout->addWidget(actionsReactionsBox, 1, 1);
 
         // Abilities tab
-        tabAbilities = new QWidget();
+        auto tabAbilities = new QWidget();
         tabs->addTab(tabAbilities, "Abilities");
 
-        abilitiesMainLayout = new QGridLayout();
+        auto abilitiesMainLayout = new QGridLayout();
         tabAbilities->setLayout(abilitiesMainLayout);
 
-        abilitiesActionsBox = new QGroupBox();
-        abilitiesActionsBox->setTitle("Actions");
-        abilitiesMainLayout->addWidget(abilitiesActionsBox, 0, 0);
+        auto abilitiesPassiveBox = new QGroupBox("Passive");
+        abilitiesMainLayout->addWidget(abilitiesPassiveBox, 0, 0);
 
-        abilitiesBonusActionsBox = new QGroupBox();
-        abilitiesBonusActionsBox->setTitle("Bonus Actions");
-        abilitiesMainLayout->addWidget(abilitiesBonusActionsBox, 0, 1);
+        auto abilitiesProficiencies = new QGroupBox("Proficiencies");
+        abilitiesMainLayout->addWidget(abilitiesProficiencies, 0, 1);
 
-        abilitiesReactionsBox = new QGroupBox();
-        abilitiesReactionsBox->setTitle("Reactions");
-        abilitiesMainLayout->addWidget(abilitiesReactionsBox, 1, 0);
+        // Items tab
+        auto tabItems = new QWidget();
+        tabs->addTab(tabItems, "Items");
 
-        abilitiesPassiveBox = new QGroupBox();
-        abilitiesPassiveBox->setTitle("Passive");
-        abilitiesMainLayout->addWidget(abilitiesPassiveBox, 1, 1);
+        auto itemsMainLayout = new QGridLayout();
+        tabItems->setLayout(itemsMainLayout);
+
+        auto itemsEquippedBox = new QGroupBox("Equipped");
+        itemsMainLayout->addWidget(itemsEquippedBox, 0, 0);
+
+        auto itemsCurrencyBox = new QGroupBox("Currency");
+        itemsMainLayout->addWidget(itemsCurrencyBox, 1, 0);
+
+        auto itemsInventoryBox = new QGroupBox("Inventory");
+        itemsMainLayout->addWidget(itemsInventoryBox, 0, 1, 2, 1);
 
         // Spells tab
-        tabSpells = new QWidget();
+        auto tabSpells = new QWidget();
         tabs->addTab(tabSpells, "Spells");
 
         // Class tab
-        tabClass = new QWidget();
+        auto tabClass = new QWidget();
         tabs->addTab(tabClass, "Class"); // and level
 
         // Lore tab
-        tabLore = new QWidget();
+        auto tabLore = new QWidget();
         tabs->addTab(tabLore, "Lore");
     }
 
 private:
     QVBoxLayout *topLayout = nullptr;
-    QTabWidget *tabs = nullptr;
-
-    QWidget *tabStats = nullptr;
-    QVBoxLayout *statsMainLayout = nullptr; //TODO just use QGridLayout
-    QGridLayout *statsTopLayout = nullptr;
-    QHBoxLayout *statsBottomLayout = nullptr;
-    QGroupBox *primaryStatsBox = nullptr;
-    QGridLayout *primaryStatsLayout = nullptr;
-    QGroupBox *primarySavesBox = nullptr;
-    QGridLayout *primarySavesLayout = nullptr;
-    QGroupBox *skillsBox = nullptr;
-    QGridLayout *skillsLayout = nullptr;
-
-    QWidget *tabItems = nullptr;
-    QGridLayout *itemsMainLayout = nullptr;
-    QGroupBox *itemsEquippedBox = nullptr;
-    QGroupBox *itemsCurrencyBox = nullptr;
-    QGroupBox *itemsInventoryBox = nullptr;
-
-    QWidget *tabAbilities = nullptr;
-    QGridLayout *abilitiesMainLayout = nullptr;
-    QGroupBox *abilitiesActionsBox = nullptr;
-    QGroupBox *abilitiesBonusActionsBox = nullptr;
-    QGroupBox *abilitiesReactionsBox = nullptr;
-    QGroupBox *abilitiesPassiveBox = nullptr;
-
-    QWidget *tabSpells = nullptr;
-    QWidget *tabClass = nullptr;
-    QWidget *tabLore = nullptr;
 
     std::string name;
 
     void AddNumberField(QGridLayout *target, const std::string &name, int row, int col)
     {
-        target->addWidget(new QLabel(QString::fromStdString(name + ":")), row, col);
-        QLineEdit *lineEdit = new QLineEdit();
+        auto label = new QLabel(QString::fromStdString(name + ":"));
+        label->setAlignment(Qt::AlignRight);
+        target->addWidget(label, row, col);
+
+        auto *lineEdit = new QLineEdit();
         lineEdit->setReadOnly(true);
         lineEdit->setValidator(new QIntValidator(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
+        lineEdit->setAlignment(Qt::AlignLeft);
+        lineEdit->setMinimumWidth(50);
+        lineEdit->setMaximumWidth(50);
         target->addWidget(lineEdit, row, col + 1);
     }
 };

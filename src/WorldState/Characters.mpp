@@ -17,10 +17,8 @@ export struct CharacterIntegerStat final
 export struct Character final : public WorldElement
 {
     std::string Name;
-    int32_t CurrentHealth = 0;
-    int32_t MaxHealth = 0;
-    int32_t TemporaryHealth = 0;
-    std::vector<CharacterIntegerStat> PrimaryStats;
+    std::vector<CharacterIntegerStat> FluidStats; // hp etc
+    std::vector<CharacterIntegerStat> PrimaryStats; // str etc
 };
 
 //TODO: Some unique id, so multiple characters could have the same name?  For now just assuming name is unique.
