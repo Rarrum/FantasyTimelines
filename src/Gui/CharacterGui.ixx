@@ -12,6 +12,7 @@ module;
 #include <unordered_set>
 #include <string>
 #include <limits>
+#include <concepts>
 
 import WorldState;
 import QTrackedWidget;
@@ -40,7 +41,6 @@ public:
         name = characterName;
 
         OnChangeTimelineView();
-        resize(800, 600);
         show();
     }
 
@@ -74,57 +74,57 @@ public:
         auto statsTopLayout = new QGridLayout();
         statsMainLayout->addLayout(statsTopLayout);
 
-        auto statsFluidBox = new QGroupBox("Status");
-        statsTopLayout->addWidget(statsFluidBox, 0, 0);
+        auto statsGeneralLayout = AddGroupBoxWithLayout<QGridLayout>(statsTopLayout, "General", 1, 0);
 
-        auto statsFluidLayout = new QGridLayout();
-        statsFluidBox->setLayout(statsFluidLayout);
-
-        AddNumberField(statsFluidLayout, "Current HP", 0, 0);
-        AddNumberField(statsFluidLayout, "Max HP", 0, 2);
-        AddNumberField(statsFluidLayout, "Temp HP", 0, 4);
-        AddNumberField(statsFluidLayout, "Conditions", 0, 6);
-
-        auto statsMiscBox = new QGroupBox("Misc");
-        statsTopLayout->addWidget(statsMiscBox, 1, 0);
-
-        auto statsMiscLayout = new QGridLayout();
-        statsMiscBox->setLayout(statsMiscLayout);
-
-        AddNumberField(statsMiscLayout, "Armor Class", 0, 0);
-        AddNumberField(statsMiscLayout, "Speed", 0, 2);
-        AddNumberField(statsMiscLayout, "Proficiency Bonus", 0, 4);
-        AddNumberField(statsMiscLayout, "Passive Perception", 0, 6);
+        AddNumberField(statsGeneralLayout, "Armor Class", 0, 0);
+        AddNumberField(statsGeneralLayout, "Speed", 0, 2);
+        AddNumberField(statsGeneralLayout, "Proficiency Bonus", 0, 4);
+        AddNumberField(statsGeneralLayout, "Passive Perception", 0, 6);
 
         auto statsBottomLayout = new QHBoxLayout();
         statsMainLayout->addLayout(statsBottomLayout);
 
-        auto primaryStatsBox = new QGroupBox("Primary Stats");
-        statsBottomLayout->addWidget(primaryStatsBox);
-
-        auto primaryStatsLayout = new QGridLayout();
-        primaryStatsBox->setLayout(primaryStatsLayout);
+        auto primaryStatsLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Primary Stats");
 
         for (const std::string &s : DefaultPrimaryStats)
             AddNumberField(primaryStatsLayout, s, primaryStatsLayout->rowCount(), 0);
 
-        auto primarySavesBox = new QGroupBox("Saving Throws");
-        statsBottomLayout->addWidget(primarySavesBox);
-
-        auto primarySavesLayout = new QGridLayout();
-        primarySavesBox->setLayout(primarySavesLayout);
+        auto primarySavesLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Saving Throws");
 
         for (const std::string &s : DefaultPrimaryStats)
             AddNumberField(primarySavesLayout, s, primarySavesLayout->rowCount(), 0);
 
-        auto skillsBox = new QGroupBox("Skills");
-        statsBottomLayout->addWidget(skillsBox);
-
-        auto skillsLayout = new QGridLayout();
-        skillsBox->setLayout(skillsLayout);
+        auto skillsLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Skills");
 
         AddNumberField(skillsLayout, "Cat Handling", 0, 0);
-        AddNumberField(skillsLayout, "TODO all the normal stuff", 1, 0);
+        AddNumberField(skillsLayout, "Stealth", 1, 0);
+        AddNumberField(skillsLayout, "TODO all the rest", 2, 0);
+
+        // Health tab
+        auto tabHealth = new QWidget();
+        tabs->addTab(tabHealth, "Health");
+
+        auto healthLayout = new QVBoxLayout();
+        tabHealth->setLayout(healthLayout);
+
+        auto healthFluidLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Health");
+
+        AddNumberField(healthFluidLayout, "Current HP", 0, 0);
+        AddNumberField(healthFluidLayout, "Max HP", 0, 2);
+        AddNumberField(healthFluidLayout, "Temp HP", 1, 0);
+
+        auto healthConditionsLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Conditions");
+
+        AddNumberField(healthConditionsLayout, "Conditions", 0, 0);
+
+        auto healthHitDieLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Hit Die");
+
+        AddNumberField(healthHitDieLayout, "1D8", 0, 0);
+
+        auto healthDeathSavesLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Death Saves");
+
+        AddNumberField(healthDeathSavesLayout, "Successes", 0, 0);
+        AddNumberField(healthDeathSavesLayout, "Failures", 0, 2);
 
         // Actions tab
         auto tabActions = new QWidget();
@@ -133,14 +133,9 @@ public:
         auto actionsMainLayout = new QGridLayout();
         tabActions->setLayout(actionsMainLayout);
 
-        auto actionsActionsBox = new QGroupBox("Actions");
-        actionsMainLayout->addWidget(actionsActionsBox, 0, 0, 2, 1);
-
-        auto actionsBonusActionsBox = new QGroupBox("Bonus Actions");
-        actionsMainLayout->addWidget(actionsBonusActionsBox, 0, 1);
-
-        auto actionsReactionsBox = new QGroupBox("Reactions");
-        actionsMainLayout->addWidget(actionsReactionsBox, 1, 1);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(actionsMainLayout, "Actions", 0, 0, 2, 1);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(actionsMainLayout, "Bonus Actions", 0, 1);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(actionsMainLayout, "Reactions", 1, 1);
 
         // Abilities tab
         auto tabAbilities = new QWidget();
@@ -149,11 +144,8 @@ public:
         auto abilitiesMainLayout = new QGridLayout();
         tabAbilities->setLayout(abilitiesMainLayout);
 
-        auto abilitiesPassiveBox = new QGroupBox("Passive");
-        abilitiesMainLayout->addWidget(abilitiesPassiveBox, 0, 0);
-
-        auto abilitiesProficiencies = new QGroupBox("Proficiencies");
-        abilitiesMainLayout->addWidget(abilitiesProficiencies, 0, 1);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(abilitiesMainLayout, "Passive", 0, 0);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(abilitiesMainLayout, "Proficiencies", 0, 1);
 
         // Items tab
         auto tabItems = new QWidget();
@@ -162,22 +154,30 @@ public:
         auto itemsMainLayout = new QGridLayout();
         tabItems->setLayout(itemsMainLayout);
 
-        auto itemsEquippedBox = new QGroupBox("Equipped");
-        itemsMainLayout->addWidget(itemsEquippedBox, 0, 0);
-
-        auto itemsCurrencyBox = new QGroupBox("Currency");
-        itemsMainLayout->addWidget(itemsCurrencyBox, 1, 0);
-
-        auto itemsInventoryBox = new QGroupBox("Inventory");
-        itemsMainLayout->addWidget(itemsInventoryBox, 0, 1, 2, 1);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(itemsMainLayout, "Equipped", 0, 0);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(itemsMainLayout, "Currency", 1, 0);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(itemsMainLayout, "Ammo", 2, 0);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(itemsMainLayout, "Inventory", 0, 1, 3, 1);
 
         // Spells tab
         auto tabSpells = new QWidget();
         tabs->addTab(tabSpells, "Spells");
 
+        // Resists tab
+        auto tabResists = new QWidget();
+        tabs->addTab(tabResists, "Resists");
+
+        auto resistsMainLayout = new QGridLayout();
+        tabResists->setLayout(resistsMainLayout);
+
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(resistsMainLayout, "Resistance", 0, 0);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(resistsMainLayout, "Immunity", 1, 0);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(resistsMainLayout, "Weakness", 0, 1);
+        std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(resistsMainLayout, "Inversion", 1, 1);
+
         // Class tab
         auto tabClass = new QWidget();
-        tabs->addTab(tabClass, "Class"); // and level
+        tabs->addTab(tabClass, "Class"); // and level(s) and background and species
 
         // Lore tab
         auto tabLore = new QWidget();
@@ -188,6 +188,19 @@ private:
     QVBoxLayout *topLayout = nullptr;
 
     std::string name;
+
+    template <typename BoxLayoutType, typename ParentLayoutType, typename ...Args>
+    requires (std::derived_from<BoxLayoutType, QLayout>, std::derived_from<ParentLayoutType, QLayout>)
+    BoxLayoutType* AddGroupBoxWithLayout(ParentLayoutType *target, const std::string &name, Args&& ...addWidgetArgs)
+    {
+        auto box = new QGroupBox(QString::fromStdString(name));
+        target->addWidget(box, std::forward<Args>(addWidgetArgs)...);
+
+        auto layout = new BoxLayoutType();
+        layout->setAlignment(Qt::AlignCenter);
+        box->setLayout(layout);
+        return layout;
+    }
 
     void AddNumberField(QGridLayout *target, const std::string &name, int row, int col)
     {
