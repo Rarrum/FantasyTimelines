@@ -36,10 +36,10 @@ public:
                 continue;
 
             QPushButton *button = new QPushButton(this);
-            button->setText(c->DisplayName.c_str());
+            button->setText(c->Name.c_str());
             QObject::connect(button, &QPushButton::clicked, [&, c]()
             {
-                new CharacterGui(c->DisplayName);
+                new CharacterGui(c->Name);
             });
 
             manualLayout->addWidget(button);

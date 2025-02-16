@@ -7,34 +7,29 @@ export module WorldState:Characters;
 import :World;
 
 // A single attribute of a character.
-export struct CharacterElement final
+export struct CharacterIntegerStat final
 {
-    std::string DisplayName;
-
-    enum class Type
-    {
-        String,
-        Number,
-        Flag
-    };
-
-    Type DataType;
-    std::string Data;
+    std::string Name;
+    int32_t Value = 0;
 };
 
 // The state of a character at a point in time.
 export struct Character final : public WorldElement
 {
-    std::vector<CharacterElement> Elements;
+    std::string Name;
+    int32_t CurrentHealth = 0;
+    int32_t MaxHealth = 0;
+    int32_t TemporaryHealth = 0;
+    std::vector<CharacterIntegerStat> PrimaryStats;
 };
 
-//TODO: think about how to uniquely identifier a character across different parts of the timeline... for now just using name
+//TODO: Some unique id, so multiple characters could have the same name?  For now just assuming name is unique.
 export const Character* FindCharacter(const World &world, const std::string &name)
 {
     for (auto &e : world.Elements)
     {
         const Character *c = dynamic_cast<const Character*>(&*e);
-        if (c && c->DisplayName == name)
+        if (c && c->Name == name)
             return c;
     }
 

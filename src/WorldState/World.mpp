@@ -11,8 +11,6 @@ export module WorldState:World;
 export struct WorldElement
 {
     virtual ~WorldElement() = default;
-
-    std::string DisplayName;
 };
 
 // The entire state of a world at a point in time.

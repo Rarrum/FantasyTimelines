@@ -14,7 +14,7 @@ export struct TimelineChange
     virtual ~TimelineChange() = default;
     virtual void Apply(World &world) = 0;
 
-    std::string DisplayName;
+    std::string ChangeName;
 };
 
 // Represents a timeline of changes.

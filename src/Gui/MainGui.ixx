@@ -24,7 +24,7 @@ public:
 
         // Temp for testing
         Character c;
-        c.DisplayName = "Rarrum";
+        c.Name = "Rarrum";
         GlobalWorld.InitialWorld.Elements.emplace_back(c);
 
         QVBoxLayout *manualLayout = new QVBoxLayout();
