@@ -8,6 +8,8 @@ module;
 #include <QLabel>
 #include <QLineEdit>
 #include <QIntValidator>
+#include <QSpacerItem>
+#include <QScrollArea>
 
 #include <unordered_set>
 #include <string>
@@ -104,24 +106,24 @@ public:
         auto tabHealth = new QWidget();
         tabs->addTab(tabHealth, "Health");
 
-        auto healthLayout = new QVBoxLayout();
+        auto healthLayout = new QGridLayout();
         tabHealth->setLayout(healthLayout);
 
-        auto healthFluidLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Health");
+        auto healthFluidLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Health", 0, 0);
 
         AddNumberField(healthFluidLayout, "Current HP", 0, 0);
         AddNumberField(healthFluidLayout, "Max HP", 0, 2);
         AddNumberField(healthFluidLayout, "Temp HP", 1, 0);
 
-        auto healthConditionsLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Conditions");
+        auto healthConditionsLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Conditions", 0, 1);
 
         AddNumberField(healthConditionsLayout, "Conditions", 0, 0);
 
-        auto healthHitDieLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Hit Die");
+        auto healthHitDieLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Hit Die", 1, 0);
 
         AddNumberField(healthHitDieLayout, "1D8", 0, 0);
 
-        auto healthDeathSavesLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Death Saves");
+        auto healthDeathSavesLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Death Saves", 1, 1);
 
         AddNumberField(healthDeathSavesLayout, "Successes", 0, 0);
         AddNumberField(healthDeathSavesLayout, "Failures", 0, 2);
@@ -163,6 +165,27 @@ public:
         auto tabSpells = new QWidget();
         tabs->addTab(tabSpells, "Spells");
 
+        auto *spellsDummyLayout = new QVBoxLayout();
+        tabSpells->setLayout(spellsDummyLayout);
+
+        auto spellsScroller = new QScrollArea();
+        spellsScroller->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        spellsScroller->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        spellsScroller->setWidgetResizable(true);
+        spellsScroller->setContentsMargins(0, 0, 0, 0);
+        spellsDummyLayout->addWidget(spellsScroller);
+
+        auto *spellsMainWidget = new QWidget();
+        spellsScroller->setWidget(spellsMainWidget);
+
+        auto spellsMainLayout = new QVBoxLayout();
+        spellsMainWidget->setLayout(spellsMainLayout);
+
+        for (int i = 0 ; i < 5; ++i)
+        {
+            std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(spellsMainLayout, "Level " + std::to_string(i));
+        }
+
         // Resists tab
         auto tabResists = new QWidget();
         tabs->addTab(tabResists, "Resists");
@@ -178,6 +201,24 @@ public:
         // Class tab
         auto tabClass = new QWidget();
         tabs->addTab(tabClass, "Class"); // and level(s) and background and species
+
+        auto *classLayout = new QVBoxLayout();
+        tabClass->setLayout(classLayout);
+
+        auto classCharacterLayout = AddGroupBoxWithLayout<QGridLayout>(classLayout, "Character");
+
+        AddNumberField(classCharacterLayout, "Species", 0, 0);
+        AddNumberField(classCharacterLayout, "Background", 0, 2);
+        AddNumberField(classCharacterLayout, "Alignment", 0, 4);
+
+        auto classClassLayout = AddGroupBoxWithLayout<QGridLayout>(classLayout, "Classes");
+
+        AddNumberField(classClassLayout, "Class", 0, 0);
+        AddNumberField(classClassLayout, "Subclass", 0, 2);
+        AddNumberField(classClassLayout, "Level", 0, 4);
+        AddNumberField(classClassLayout, "Class", 1, 0);
+        AddNumberField(classClassLayout, "Subclass", 1, 2);
+        AddNumberField(classClassLayout, "Level", 1, 4);
 
         // Lore tab
         auto tabLore = new QWidget();
@@ -205,15 +246,13 @@ private:
     void AddNumberField(QGridLayout *target, const std::string &name, int row, int col)
     {
         auto label = new QLabel(QString::fromStdString(name + ":"));
-        label->setAlignment(Qt::AlignRight);
-        target->addWidget(label, row, col);
+        target->addWidget(label, row, col, Qt::AlignLeft);
 
         auto *lineEdit = new QLineEdit();
         lineEdit->setReadOnly(true);
         lineEdit->setValidator(new QIntValidator(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
-        lineEdit->setAlignment(Qt::AlignLeft);
         lineEdit->setMinimumWidth(50);
         lineEdit->setMaximumWidth(50);
-        target->addWidget(lineEdit, row, col + 1);
+        target->addWidget(lineEdit, row, col + 1, Qt::AlignLeft);
     }
 };
