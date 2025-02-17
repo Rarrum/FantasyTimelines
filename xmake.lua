@@ -14,16 +14,17 @@ end
 --end
 
 add_requires("nlohmann_json")
+add_requires("qt6widgets")
 
 target("FantasyTimelines")
     set_languages("cxx23")
     set_policy("build.c++.modules", true)
     set_exceptions("cxx")
-    add_rules("qt.application")
---    add_rules("qt.console")
+    add_packages("nlohmann_json")
+    add_rules("qt.widgetapp")
+
     add_headerfiles("src/**.h")
     add_files("src/**.cpp")
     add_files("src/**.mpp")
     add_files("src/**.ixx")
-    add_frameworks("QtWidgets", "QtGui")
-    add_packages("nlohmann_json")
+
