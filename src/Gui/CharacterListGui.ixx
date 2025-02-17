@@ -25,7 +25,7 @@ public:
     {
         if (mainLayout)
             delete mainLayout;
-        mainLayout = new QVBoxLayout();
+        mainLayout = CreateOwnedWidget<QVBoxLayout>();
 
         mainLayout->setAlignment(Qt::AlignTop);
         setLayout(mainLayout);
@@ -38,7 +38,7 @@ public:
             if (!c)
                 continue;
 
-            auto button = new QPushButton(c->Name.c_str());
+            auto button = CreateOwnedWidget<QPushButton>(c->Name.c_str());
             QObject::connect(button, &QPushButton::clicked, [&, c]()
             {
                 new CharacterGui(c->Name);
@@ -47,10 +47,10 @@ public:
             mainLayout->addWidget(button);
         }
 
-        auto bottomControlsLayout = new QHBoxLayout();
+        auto bottomControlsLayout = CreateOwnedWidget<QHBoxLayout>();
         mainLayout->addLayout(bottomControlsLayout);
 
-        auto buttonCreate = new QPushButton("Create New");
+        auto buttonCreate = CreateOwnedWidget<QPushButton>("Create New");
         QObject::connect(buttonCreate, &QPushButton::clicked, [&]()
         {
             //new CharacterCreateGui();
@@ -73,14 +73,14 @@ public:
         });
         bottomControlsLayout->addWidget(buttonCreate);
 
-        auto buttonImport = new QPushButton("Import");
+        auto buttonImport = CreateOwnedWidget<QPushButton>("Import");
         QObject::connect(buttonImport, &QPushButton::clicked, [&]()
         {
             //new CharacterImportGui();
         });
         bottomControlsLayout->addWidget(buttonImport);
 
-        auto buttonExport = new QPushButton("Export");
+        auto buttonExport = CreateOwnedWidget<QPushButton>("Export");
         QObject::connect(buttonExport, &QPushButton::clicked, [&]()
         {
             //new CharacterImportGui();

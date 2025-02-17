@@ -50,7 +50,7 @@ public:
     {
         if (topLayout)
             delete topLayout; // also deletes all children
-        topLayout = new QVBoxLayout();
+        topLayout = CreateOwnedWidget<QVBoxLayout>();
 
         topLayout->setAlignment(Qt::AlignTop);
         setLayout(topLayout);
@@ -63,17 +63,17 @@ public:
         topLayout->setEnabled(true);
         setWindowTitle(QString::fromStdString("Fantasy Timelines - Character - " + c->Name));
 
-        auto tabs = new QTabWidget();
+        auto tabs = CreateOwnedWidget<QTabWidget>();
         topLayout->addWidget(tabs);
 
         // Stats tab
-        auto tabStats = new QWidget();
+        auto tabStats = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabStats, "Stats");
 
-        auto statsMainLayout = new QVBoxLayout();
+        auto statsMainLayout = CreateOwnedWidget<QVBoxLayout>();
         tabStats->setLayout(statsMainLayout);
 
-        auto statsTopLayout = new QGridLayout();
+        auto statsTopLayout = CreateOwnedWidget<QGridLayout>();
         statsMainLayout->addLayout(statsTopLayout);
 
         auto statsGeneralLayout = AddGroupBoxWithLayout<QGridLayout>(statsTopLayout, "General", 1, 0);
@@ -83,7 +83,7 @@ public:
         AddNumberField(statsGeneralLayout, "Proficiency Bonus", 0, 4);
         AddNumberField(statsGeneralLayout, "Passive Perception", 0, 6);
 
-        auto statsBottomLayout = new QHBoxLayout();
+        auto statsBottomLayout = CreateOwnedWidget<QHBoxLayout>();
         statsMainLayout->addLayout(statsBottomLayout);
 
         auto primaryStatsLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Primary Stats");
@@ -103,10 +103,10 @@ public:
         AddNumberField(skillsLayout, "TODO all the rest", 2, 0);
 
         // Health tab
-        auto tabHealth = new QWidget();
+        auto tabHealth = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabHealth, "Health");
 
-        auto healthLayout = new QGridLayout();
+        auto healthLayout = CreateOwnedWidget<QGridLayout>();
         tabHealth->setLayout(healthLayout);
 
         auto healthFluidLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Health", 0, 0, 1, 2);
@@ -133,10 +133,10 @@ public:
         AddNumberField(healthEffectsLayout, "Effects", 0, 0); // buffs / debuffs
 
         // Actions tab
-        auto tabActions = new QWidget();
+        auto tabActions = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabActions, "Actions");
 
-        auto actionsMainLayout = new QGridLayout();
+        auto actionsMainLayout = CreateOwnedWidget<QGridLayout>();
         tabActions->setLayout(actionsMainLayout);
 
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(actionsMainLayout, "Actions", 0, 0, 2, 1);
@@ -144,20 +144,20 @@ public:
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(actionsMainLayout, "Reactions", 1, 1);
 
         // Abilities tab
-        auto tabAbilities = new QWidget();
+        auto tabAbilities = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabAbilities, "Abilities");
 
-        auto abilitiesMainLayout = new QGridLayout();
+        auto abilitiesMainLayout = CreateOwnedWidget<QGridLayout>();
         tabAbilities->setLayout(abilitiesMainLayout);
 
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(abilitiesMainLayout, "Passive", 0, 0);
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(abilitiesMainLayout, "Proficiencies", 0, 1);
 
         // Items tab
-        auto tabItems = new QWidget();
+        auto tabItems = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabItems, "Items");
 
-        auto itemsMainLayout = new QGridLayout();
+        auto itemsMainLayout = CreateOwnedWidget<QGridLayout>();
         tabItems->setLayout(itemsMainLayout);
 
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(itemsMainLayout, "Equipped", 0, 0);
@@ -166,25 +166,25 @@ public:
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(itemsMainLayout, "Inventory", 0, 1, 3, 1);
 
         // Spells tab
-        auto tabSpells = new QWidget();
+        auto tabSpells = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabSpells, "Spells");
 
-        auto *spellsDummyLayout = new QVBoxLayout();
+        auto *spellsDummyLayout = CreateOwnedWidget<QVBoxLayout>();
         spellsDummyLayout->setContentsMargins(0, 0, 0, 0);
         tabSpells->setLayout(spellsDummyLayout);
 
-        auto spellsScroller = new QScrollArea();
+        auto spellsScroller = CreateOwnedWidget<QScrollArea>();
         spellsScroller->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         spellsScroller->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         spellsScroller->setWidgetResizable(true);
         spellsScroller->setContentsMargins(0, 0, 0, 0);
         spellsDummyLayout->addWidget(spellsScroller);
 
-        auto *spellsMainWidget = new QWidget();
+        auto *spellsMainWidget = CreateOwnedWidget<QWidget>();
         spellsMainWidget->setContentsMargins(0, 0, 0, 0);
         spellsScroller->setWidget(spellsMainWidget);
 
-        auto spellsMainLayout = new QVBoxLayout();
+        auto spellsMainLayout = CreateOwnedWidget<QVBoxLayout>();
         spellsMainWidget->setLayout(spellsMainLayout);
 
         for (int i = 0 ; i < 5; ++i)
@@ -193,10 +193,10 @@ public:
         }
 
         // Resists tab
-        auto tabResists = new QWidget();
+        auto tabResists = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabResists, "Resists");
 
-        auto resistsMainLayout = new QGridLayout();
+        auto resistsMainLayout = CreateOwnedWidget<QGridLayout>();
         tabResists->setLayout(resistsMainLayout);
 
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(resistsMainLayout, "Resistance", 0, 0);
@@ -205,10 +205,10 @@ public:
         std::ignore = AddGroupBoxWithLayout<QHBoxLayout>(resistsMainLayout, "Inversion", 1, 1);
 
         // Class tab
-        auto tabClass = new QWidget();
+        auto tabClass = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabClass, "Class"); // and level(s) and background and species
 
-        auto *classLayout = new QVBoxLayout();
+        auto *classLayout = CreateOwnedWidget<QVBoxLayout>();
         tabClass->setLayout(classLayout);
 
         auto classCharacterLayout = AddGroupBoxWithLayout<QGridLayout>(classLayout, "Character");
@@ -227,7 +227,7 @@ public:
         AddNumberField(classClassLayout, "Level", 1, 4);
 
         // Lore tab
-        auto tabLore = new QWidget();
+        auto tabLore = CreateOwnedWidget<QWidget>();
         tabs->addTab(tabLore, "Lore");
     }
 
@@ -240,7 +240,7 @@ private:
     requires (std::derived_from<BoxLayoutType, QLayout>, std::derived_from<ParentLayoutType, QLayout>)
     BoxLayoutType* AddGroupBoxWithLayout(ParentLayoutType *target, const std::string &name, Args&& ...addWidgetArgs)
     {
-        auto box = new QGroupBox(QString::fromStdString(name));
+        auto box = CreateOwnedWidget<QGroupBox>(QString::fromStdString(name));
         target->addWidget(box, std::forward<Args>(addWidgetArgs)...);
 
         auto layout = new BoxLayoutType();
@@ -251,12 +251,12 @@ private:
 
     void AddNumberField(QGridLayout *target, const std::string &name, int row, int col)
     {
-        auto label = new QLabel(QString::fromStdString(name + ":"));
+        auto label = CreateOwnedWidget<QLabel>(QString::fromStdString(name + ":"));
         target->addWidget(label, row, col, Qt::AlignLeft);
 
-        auto *lineEdit = new QLineEdit();
+        auto *lineEdit = CreateOwnedWidget<QLineEdit>();
         lineEdit->setReadOnly(true);
-        lineEdit->setValidator(new QIntValidator(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
+        lineEdit->setValidator(CreateOwnedWidget<QIntValidator>(std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
         lineEdit->setMinimumWidth(50);
         lineEdit->setMaximumWidth(50);
         target->addWidget(lineEdit, row, col + 1, Qt::AlignLeft);

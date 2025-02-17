@@ -6,11 +6,12 @@ module;
 #include <QtGui/QCloseEvent>
 
 import WorldState;
+import QSafeWidgetOwner;
 
 export module QTrackedWidget;
 
 // Tracks all active windows that need sync'd to a timeline position.
-export class QTrackedWidget: public QWidget
+export class QTrackedWidget: virtual public QWidget, public QSafeWidgetOwner
 {
 public:
     QTrackedWidget()

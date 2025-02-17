@@ -9,12 +9,12 @@ module;
 
 import WorldState;
 import CharacterListGui;
-import QTrackedWidget;
+import QSafeWidgetOwner;
 
 export module MainGui;
 
 // The base top-level window for the app.
-export class MainGui : public QWidget
+export class MainGui : virtual public QWidget, QSafeWidgetOwner
 {
 public:
     MainGui(QApplication &app)
@@ -22,14 +22,14 @@ public:
     {
         setWindowTitle("Fantasy Timelines - Main Controls");
 
-        auto manualLayout = new QVBoxLayout();
+        auto manualLayout = CreateOwnedWidget<QVBoxLayout>();
         manualLayout->setAlignment(Qt::AlignTop);
 
-        auto tempButton = new QPushButton();
+        auto tempButton = CreateOwnedWidget<QPushButton>();
         tempButton->setText("(Placeholder for Timeline Stuff)");
         manualLayout->addWidget(tempButton);
 
-        auto charactersButton = new QPushButton();
+        auto charactersButton = CreateOwnedWidget<QPushButton>();
         charactersButton->setText("View Characters");
         QObject::connect(charactersButton, &QPushButton::clicked, [&]()
         {
