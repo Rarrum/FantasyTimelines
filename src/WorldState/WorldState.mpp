@@ -1,5 +1,9 @@
 module;
 
+#include <vector>
+
+import Utilities;
+
 export module WorldState:WorldState;
 import :World;
 import :Timeline;
@@ -11,10 +15,23 @@ export struct WorldState
     Timeline WorldTimeline;
 
     //TODO: Also an iter for where into the timeline this view is at?
-    const World& CurrentView() const { return InitialWorld; }
+    const World& CurrentView() const { return currentView; }
 
-    //TODO: caching of World along the timeline maybe, and mechanisms to change CurrentView
+    void AddToTimelineAndUpdateView(ClonePtr<TimelineChange> change)
+    {
+        WorldTimeline.emplace_back(change);
+
+        currentView = InitialWorld;
+        for (const ClonePtr<TimelineChange> &c : WorldTimeline)
+            c->Apply(currentView);
+    }
+
+    //TODO: caching of World along the timeline maybe, and more mechanisms to change CurrentView
+
+private:
+    World currentView;
 };
 
 // Global world state
+//TODO: don't export directly, but export const accessors and stuff
 export WorldState GlobalWorld;

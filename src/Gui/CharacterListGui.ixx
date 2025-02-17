@@ -2,6 +2,7 @@ module;
 
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 
 import WorldState;
 import QTrackedWidget;
@@ -22,12 +23,14 @@ public:
 
     void OnChangeTimelineView() override
     {
-        if (manualLayout)
-            delete manualLayout;
-        manualLayout = new QVBoxLayout();
+        if (mainLayout)
+            delete mainLayout;
+        mainLayout = new QVBoxLayout();
 
-        manualLayout->setAlignment(Qt::AlignTop);
-        setLayout(manualLayout);
+        mainLayout->setAlignment(Qt::AlignTop);
+        setLayout(mainLayout);
+
+        //TODO: scroll bar for characters?  Or use a list control instead?
 
         for (const auto &e : GlobalWorld.CurrentView().Elements)
         {
@@ -35,17 +38,56 @@ public:
             if (!c)
                 continue;
 
-            QPushButton *button = new QPushButton(this);
-            button->setText(c->Name.c_str());
+            auto button = new QPushButton(c->Name.c_str());
             QObject::connect(button, &QPushButton::clicked, [&, c]()
             {
                 new CharacterGui(c->Name);
             });
 
-            manualLayout->addWidget(button);
+            mainLayout->addWidget(button);
         }
+
+        auto bottomControlsLayout = new QHBoxLayout();
+        mainLayout->addLayout(bottomControlsLayout);
+
+        auto buttonCreate = new QPushButton("Create New");
+        QObject::connect(buttonCreate, &QPushButton::clicked, [&]()
+        {
+            //new CharacterCreateGui();
+
+            //some temp hardcoded ones for initial testing
+            {
+                Character tempChar = CreateTempTestCharacter("Rarone");
+                TimelineAddCharacter timelineAddChar;
+                timelineAddChar.NewCharacter = tempChar;
+                GlobalWorld.AddToTimelineAndUpdateView(timelineAddChar);
+            }
+            {
+                Character tempChar = CreateTempTestCharacter("Rartwo");
+                TimelineAddCharacter timelineAddChar;
+                timelineAddChar.NewCharacter = tempChar;
+                GlobalWorld.AddToTimelineAndUpdateView(timelineAddChar);
+            }
+
+            QTrackedWidget::ChangeTimelineView();
+        });
+        bottomControlsLayout->addWidget(buttonCreate);
+
+        auto buttonImport = new QPushButton("Import");
+        QObject::connect(buttonImport, &QPushButton::clicked, [&]()
+        {
+            //new CharacterImportGui();
+        });
+        bottomControlsLayout->addWidget(buttonImport);
+
+        auto buttonExport = new QPushButton("Export");
+        QObject::connect(buttonExport, &QPushButton::clicked, [&]()
+        {
+            //new CharacterImportGui();
+        });
+        bottomControlsLayout->addWidget(buttonExport);
     }
 
 private:
-    QVBoxLayout *manualLayout = nullptr;
+    QVBoxLayout *mainLayout = nullptr;
 };

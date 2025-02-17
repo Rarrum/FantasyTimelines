@@ -13,12 +13,42 @@ export struct CharacterIntegerStat final
     int32_t Value = 0;
 };
 
+// A set of modifications to a character.
+export struct CharacterModifier final
+{
+    std::string Name;
+};
+
+// A charcter class and level.
+export struct CharacterClass final
+{
+    std::string Class;
+    std::string Subclass;
+    int32_t Level;
+};
+
+//TODO: items and equipped stuff and potential effects from that
+
 // The state of a character at a point in time.
+// Characters have BaseStats as a starting point, then a series of effects are computed on top of that to determine their current (final) state.
 export struct Character final : public WorldElement
 {
     std::string Name;
-    std::vector<CharacterIntegerStat> FluidStats; // hp etc
-    std::vector<CharacterIntegerStat> PrimaryStats; // str etc
+
+    std::vector<CharacterIntegerStat> BaseStats; // hp, strength (as rolled), etc - prior to applying class/species/etc
+    std::vector<CharacterIntegerStat> FinalStats; // after applying species traits, class stuff, effects, etc - TODO: We just don't save/load this field?
+
+    std::vector<CharacterModifier> Origins; // species, background, etc
+    std::vector<CharacterClass> Classes;
+    std::vector<CharacterModifier> Effects;
+
+    //TODO: resource pools like spells?  maybe even "current hp" goes here, leaving max hp to base?
+
+    void ComputeFinalStats()
+    {
+        FinalStats = BaseStats;
+        //TODO: actually do stuff
+    }
 };
 
 //TODO: Some unique id, so multiple characters could have the same name?  For now just assuming name is unique.
@@ -32,4 +62,19 @@ export const Character* FindCharacter(const World &world, const std::string &nam
     }
 
     return nullptr;
+}
+
+export Character CreateTempTestCharacter(const std::string &name)
+{
+    Character c;
+    c.Name = name;
+    c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Strength", .Value = 9});
+    c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Dexterity", .Value = 11});
+    c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Constitution", .Value = 13});
+    c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Intelligence", .Value = 15});
+    c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Wisdom", .Value = 17});
+    c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Charisma", .Value = 19});
+
+    c.ComputeFinalStats();
+    return c;
 }

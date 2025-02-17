@@ -22,19 +22,14 @@ public:
     {
         setWindowTitle("Fantasy Timelines - Main Controls");
 
-        // Temp for testing
-        Character c;
-        c.Name = "Rarrum";
-        GlobalWorld.InitialWorld.Elements.emplace_back(c);
-
-        QVBoxLayout *manualLayout = new QVBoxLayout();
+        auto manualLayout = new QVBoxLayout();
         manualLayout->setAlignment(Qt::AlignTop);
 
-        QPushButton *tempButton = new QPushButton();
+        auto tempButton = new QPushButton();
         tempButton->setText("(Placeholder for Timeline Stuff)");
         manualLayout->addWidget(tempButton);
 
-        QPushButton *charactersButton = new QPushButton();
+        auto charactersButton = new QPushButton();
         charactersButton->setText("View Characters");
         QObject::connect(charactersButton, &QPushButton::clicked, [&]()
         {

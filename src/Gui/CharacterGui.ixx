@@ -109,15 +109,11 @@ public:
         auto healthLayout = new QGridLayout();
         tabHealth->setLayout(healthLayout);
 
-        auto healthFluidLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Health", 0, 0);
+        auto healthFluidLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Health", 0, 0, 1, 2);
 
         AddNumberField(healthFluidLayout, "Current HP", 0, 0);
         AddNumberField(healthFluidLayout, "Max HP", 0, 2);
         AddNumberField(healthFluidLayout, "Temp HP", 1, 0);
-
-        auto healthConditionsLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Conditions", 0, 1);
-
-        AddNumberField(healthConditionsLayout, "Conditions", 0, 0);
 
         auto healthHitDieLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Hit Die", 1, 0);
 
@@ -127,6 +123,14 @@ public:
 
         AddNumberField(healthDeathSavesLayout, "Successes", 0, 0);
         AddNumberField(healthDeathSavesLayout, "Failures", 0, 2);
+
+        auto healthConditionsLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Conditions", 2, 0);
+
+        AddNumberField(healthConditionsLayout, "Conditions", 0, 0); // prone etc
+
+        auto healthEffectsLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Effects", 2, 1);
+
+        AddNumberField(healthEffectsLayout, "Effects", 0, 0); // buffs / debuffs
 
         // Actions tab
         auto tabActions = new QWidget();
@@ -166,6 +170,7 @@ public:
         tabs->addTab(tabSpells, "Spells");
 
         auto *spellsDummyLayout = new QVBoxLayout();
+        spellsDummyLayout->setContentsMargins(0, 0, 0, 0);
         tabSpells->setLayout(spellsDummyLayout);
 
         auto spellsScroller = new QScrollArea();
@@ -176,6 +181,7 @@ public:
         spellsDummyLayout->addWidget(spellsScroller);
 
         auto *spellsMainWidget = new QWidget();
+        spellsMainWidget->setContentsMargins(0, 0, 0, 0);
         spellsScroller->setWidget(spellsMainWidget);
 
         auto spellsMainLayout = new QVBoxLayout();

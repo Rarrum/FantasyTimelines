@@ -16,7 +16,7 @@ end
 add_requires("nlohmann_json")
 
 target("FantasyTimelines")
-    set_languages("cxx20")
+    set_languages("cxx23")
     set_policy("build.c++.modules", true)
     set_exceptions("cxx")
     add_rules("qt.application")

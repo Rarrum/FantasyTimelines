@@ -7,14 +7,21 @@ import Utilities;
 
 export module WorldState:Timeline;
 import :World;
+import :Characters;
 
 // Represents a single change to a timeline
 export struct TimelineChange
 {
     virtual ~TimelineChange() = default;
-    virtual void Apply(World &world) = 0;
+    virtual void Apply(World &world) const = 0;
 
     std::string ChangeName;
+};
+
+// For batches of changes that should always be applied together, such as "character leveled up", which may involve adding multiple skills and such
+export struct TimelineChangeBatch: TimelineChange
+{
+    std::vector<ClonePtr<TimelineChange>> Changes;
 };
 
 // Represents a timeline of changes.
@@ -27,6 +34,16 @@ export struct TimelineSplit final : public TimelineChange
     std::vector<Timeline> Splits;
     size_t ChosenPathIndex = 0;
 
-    // No-op.  TimelineSplit is special-cased.
-    void Apply(World &world) override {}
+    // No-op.  TimelineSplit is special-cased?
+    void Apply(World &world) const override {}
+};
+
+export struct TimelineAddCharacter final: public TimelineChange
+{
+    Character NewCharacter;
+
+    void Apply(World &world) const override
+    {
+        world.Elements.emplace_back(NewCharacter);
+    }
 };
