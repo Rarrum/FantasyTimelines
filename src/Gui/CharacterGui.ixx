@@ -32,6 +32,37 @@ namespace
         "Wisdom",
         "Charisma"
     };
+
+    std::vector<std::string> DefaultSkills
+    {
+        "Acrobatics",
+        "Animal Handling",
+        "Arcana",
+        "Athletics",
+        "Deception",
+        "History",
+        "Insight",
+        "Intimidation",
+        "Investigation",
+        "Medicine",
+        "Nature",
+        "Perception",
+        "Performance",
+        "Persuasion",
+        "Religion",
+        "Sleight of Hand",
+        "Stealth",
+        "Survival"
+    };
+
+    std::vector<std::string> DefaultHitDice
+    {
+        "D4",
+        "D6",
+        "D8",
+        "D10",
+        "D12"
+    };
 }
 
 export class CharacterGui : public QTrackedWidget
@@ -86,21 +117,20 @@ public:
         auto statsBottomLayout = CreateOwnedWidget<QHBoxLayout>();
         statsMainLayout->addLayout(statsBottomLayout);
 
-        auto primaryStatsLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Primary Stats");
-
+        auto statsLeftLayout = CreateOwnedWidget<QVBoxLayout>();
+        statsBottomLayout->addLayout(statsLeftLayout);
+        
+        auto primaryStatsLayout = AddGroupBoxWithLayout<QGridLayout>(statsLeftLayout, "Primary Stats");
         for (const std::string &s : DefaultPrimaryStats)
             AddNumberField(primaryStatsLayout, s, primaryStatsLayout->rowCount(), 0);
 
-        auto primarySavesLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Saving Throws");
-
+        auto primarySavesLayout = AddGroupBoxWithLayout<QGridLayout>(statsLeftLayout, "Saving Throws");
         for (const std::string &s : DefaultPrimaryStats)
             AddNumberField(primarySavesLayout, s, primarySavesLayout->rowCount(), 0);
 
         auto skillsLayout = AddGroupBoxWithLayout<QGridLayout>(statsBottomLayout, "Skills");
-
-        AddNumberField(skillsLayout, "Cat Handling", 0, 0);
-        AddNumberField(skillsLayout, "Stealth", 1, 0);
-        AddNumberField(skillsLayout, "TODO all the rest", 2, 0);
+        for (const std::string& skill : DefaultSkills)
+            AddNumberField(skillsLayout, skill, skillsLayout->rowCount(), 0);
 
         // Health tab
         auto tabHealth = CreateOwnedWidget<QWidget>();
@@ -116,8 +146,8 @@ public:
         AddNumberField(healthFluidLayout, "Temp HP", 1, 0);
 
         auto healthHitDieLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Hit Die", 1, 0);
-
-        AddNumberField(healthHitDieLayout, "1D8", 0, 0);
+        for (const std::string& die : DefaultHitDice)
+            AddNumberField(healthHitDieLayout, die, healthHitDieLayout->rowCount(), 0);
 
         auto healthDeathSavesLayout = AddGroupBoxWithLayout<QGridLayout>(healthLayout, "Death Saves", 1, 1);
 

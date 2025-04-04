@@ -2,6 +2,7 @@ module;
 
 #include <string>
 #include <vector>
+#include <cstdint>
 
 export module WorldState:Characters;
 import :World;
@@ -19,12 +20,32 @@ export struct CharacterModifier final
     std::string Name;
 };
 
-// A charcter class and level.
+// A character class and level.
 export struct CharacterClass final
 {
     std::string Class;
     std::string Subclass;
     int32_t Level;
+};
+
+//TODO: this doesn't really belong in character, find a better home for it later
+export enum class ActionType
+{
+    Action,
+    BonusAction,
+    Reaction,
+    FreeAction,
+    MoveAction,
+};
+
+//TODO: this doesn't really belong in character, find a better home for it later
+export struct Spell final
+{
+    std::string Name;
+    uint32_t Level = 0;
+    std::string School;
+    ActionType CastingTime;
+    std::string Description;
 };
 
 //TODO: items and equipped stuff and potential effects from that
@@ -42,7 +63,8 @@ export struct Character final : public WorldElement
     std::vector<CharacterClass> Classes;
     std::vector<CharacterModifier> Effects;
 
-    //TODO: resource pools like spells?  maybe even "current hp" goes here, leaving max hp to base?
+    //TODO: more general resource pools so we don't hardcode spells?  maybe even "current hp" goes here, leaving max hp to base?
+    std::vector<Spell> Spells;
 
     void ComputeFinalStats()
     {
@@ -51,7 +73,7 @@ export struct Character final : public WorldElement
     }
 };
 
-//TODO: Some unique id, so multiple characters could have the same name?  For now just assuming name is unique.
+//TODO: Some unique id, so multiple characters could have the same name (or names can change)?  For now just assuming name is unique.
 export const Character* FindCharacter(const World &world, const std::string &name)
 {
     for (auto &e : world.Elements)
