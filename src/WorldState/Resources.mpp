@@ -1,0 +1,28 @@
+module;
+
+#include <string>
+#include <vector>
+#include <cstdint>
+
+export module WorldState:Resources;
+import :World;
+
+//TODO: Are spells/abilities the same thing or different types?
+export struct Spell final
+{
+    std::string Name;
+    uint32_t Level = 0;
+    std::string School;
+    //ActionType CastingTime; //TODO: figure out how to represent this generically later
+    std::string Description;
+    //TODO: effects they apply?
+};
+
+export struct Item final
+{
+    std::string Name;
+    std::string Description;
+    //TODO: effects they apply?
+    //TODO: stack count, weight, etc
+    //TODO: equipability, slot, etc
+};

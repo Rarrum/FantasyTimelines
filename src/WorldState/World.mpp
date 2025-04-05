@@ -10,6 +10,8 @@ export module WorldState:World;
 // An element in the state of a world.
 export struct WorldElement
 {
+    std::string Name;
+
     virtual ~WorldElement() = default;
 };
 

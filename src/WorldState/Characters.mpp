@@ -6,6 +6,7 @@ module;
 
 export module WorldState:Characters;
 import :World;
+import :Resources;
 
 // A single attribute of a character.
 export struct CharacterIntegerStat final
@@ -28,43 +29,21 @@ export struct CharacterClass final
     int32_t Level;
 };
 
-//TODO: this doesn't really belong in character, find a better home for it later
-export enum class ActionType
-{
-    Action,
-    BonusAction,
-    Reaction,
-    FreeAction,
-    MoveAction,
-};
-
-//TODO: this doesn't really belong in character, find a better home for it later
-export struct Spell final
-{
-    std::string Name;
-    uint32_t Level = 0;
-    std::string School;
-    ActionType CastingTime;
-    std::string Description;
-};
-
-//TODO: items and equipped stuff and potential effects from that
-
 // The state of a character at a point in time.
 // Characters have BaseStats as a starting point, then a series of effects are computed on top of that to determine their current (final) state.
 export struct Character final : public WorldElement
 {
-    std::string Name;
-
     std::vector<CharacterIntegerStat> BaseStats; // hp, strength (as rolled), etc - prior to applying class/species/etc
     std::vector<CharacterIntegerStat> FinalStats; // after applying species traits, class stuff, effects, etc - TODO: We just don't save/load this field?
 
     std::vector<CharacterModifier> Origins; // species, background, etc
     std::vector<CharacterClass> Classes;
-    std::vector<CharacterModifier> Effects;
 
-    //TODO: more general resource pools so we don't hardcode spells?  maybe even "current hp" goes here, leaving max hp to base?
-    std::vector<Spell> Spells;
+    std::vector<CharacterModifier> TransientEffects;
+
+    //TODO: Is "current hp" and "temp hp" a resource, leaving max hp to base?
+    std::vector<Spell> Spells; //TODO: prepared vs not?
+    std::vector<Item> Items;
 
     void ComputeFinalStats()
     {
@@ -90,6 +69,9 @@ export Character CreateTempTestCharacter(const std::string &name)
 {
     Character c;
     c.Name = name;
+
+    c.Classes.emplace_back(CharacterClass{.Class = "Wizard", .Subclass = "Cat Wizard", .Level = 1});
+
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Strength", .Value = 9});
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Dexterity", .Value = 11});
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Constitution", .Value = 13});
@@ -97,6 +79,19 @@ export Character CreateTempTestCharacter(const std::string &name)
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Wisdom", .Value = 17});
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Charisma", .Value = 19});
 
+    c.Spells.emplace_back(Spell{.Name = "Conjure Cats", .Level = 0, .School = "Catjuration", .Description = "Meow."});
+    c.Spells.emplace_back(Spell{.Name = "Whisker Rain", .Level = 1, .School = "Meowjuration", .Description = "This is strange."});
+    c.Spells.emplace_back(Spell{.Name = "Tiger Tracks", .Level = 2, .School = "Whatever", .Description = "Something about tigers or something."});
+    c.Spells.emplace_back(Spell{.Name = "Cougar Claws", .Level = 3, .School = "Whatever", .Description = "Something about claws."});
+
+    c.Items.emplace_back(Item{.Name = "Short Sword"});
+    c.Items.emplace_back(Item{.Name = "Shield"});
+    c.Items.emplace_back(Item{.Name = "Rations"});
+
     c.ComputeFinalStats();
     return c;
 }
+
+//TODO: While the original intent here was to have everything be fully generic and usable by different rulesets and world systems, that's getting kind of out of hand.
+//      Perhaps we keep only some basics generic, then make named variants (DnD 5E, etc) that has more specifics baked in?
+

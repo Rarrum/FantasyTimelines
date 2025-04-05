@@ -6,3 +6,4 @@ export import :World;
 export import :WorldState;
 export import :Timeline;
 export import :Characters;
+export import :Resources;
