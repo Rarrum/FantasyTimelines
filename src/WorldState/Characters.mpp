@@ -19,6 +19,7 @@ export struct CharacterIntegerStat final
 export struct CharacterModifier final
 {
     std::string Name;
+    //TODO: set of modifiers (stats, add abilities, etc)
 };
 
 // A character class and level.
@@ -36,7 +37,10 @@ export struct Character final : public WorldElement
     std::vector<CharacterIntegerStat> BaseStats; // hp, strength (as rolled), etc - prior to applying class/species/etc
     std::vector<CharacterIntegerStat> FinalStats; // after applying species traits, class stuff, effects, etc - TODO: We just don't save/load this field?
 
-    std::vector<CharacterModifier> Origins; // species, background, etc
+    std::vector<CharacterModifier> Species;
+    std::vector<CharacterModifier> Backgrounds;
+    std::vector<CharacterModifier> Feats;
+
     std::vector<CharacterClass> Classes;
 
     std::vector<CharacterModifier> TransientEffects;
@@ -71,6 +75,10 @@ export Character CreateTempTestCharacter(const std::string &name)
     c.Name = name;
 
     c.Classes.emplace_back(CharacterClass{.Class = "Wizard", .Subclass = "Cat Wizard", .Level = 1});
+
+    c.Species.emplace_back(CharacterModifier{.Name = "Cat"});
+    c.Backgrounds.emplace_back(CharacterModifier{.Name = "Neighborhood Cat"});
+    c.Feats.emplace_back(CharacterModifier{.Name = "Catnip Enthusiast"});
 
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Strength", .Value = 9});
     c.BaseStats.emplace_back(CharacterIntegerStat{.Name = "Dexterity", .Value = 11});
